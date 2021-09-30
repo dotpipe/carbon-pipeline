@@ -1,0 +1,16 @@
+[package]
+name = "dispatcher"
+version = "0.0.1"
+authors = ["Philippe Assis <codephilippe@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+carbon-core = { path = "../../core", features = ["modules"] }
+serde_json = "1.0.60"
+log = "0.4.14"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "dispatcher"

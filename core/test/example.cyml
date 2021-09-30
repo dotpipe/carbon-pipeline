@@ -1,0 +1,19 @@
+version: 'test'
+modules:
+  - name: mock
+    source: ../modules/mock/target/release/mock.dll
+  - name: payload
+    source: ../modules/payload/target/release/payload.dll
+pipeline:
+  - payload:
+      request:
+        num: {{ calc "y * 3" y=(random) }}
+    producer: true
+    case:
+      eq (calc "num % 2") 0: par
+      eq (calc "num % 2") 1: impar
+  - ref: "par"
+    print: "par"
+  - ref: "impar"
+    print: "impar"
+  - attach: ""

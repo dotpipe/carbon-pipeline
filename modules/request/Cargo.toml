@@ -1,0 +1,21 @@
+[package]
+name = "request"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = "0.11.4"
+carbon-core = { path = "../../core", features = ["modules"] }
+serde_json = "1.0.60"
+log = "0.4.14"
+tokio = { version = "1", features = ["full"] }
+
+[dev-dependencies]
+actix-web = { git = "https://github.com/PhilippeAssis/actix-web", branch = "3.0" }
+actix-rt = "2.2.0"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "request"

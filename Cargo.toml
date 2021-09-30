@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "carbon",
+    "core",
+    "modules/mock",
+    "modules/payload",
+    "modules/switch",
+    "modules/http_server",
+    "modules/request",
+    "modules/dispatcher",
+]

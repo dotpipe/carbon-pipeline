@@ -1,0 +1,74 @@
+modules:
+  - name: http
+    source: target/release/http_server
+  - name: switch
+    source: target/release/switch
+  - name: payload
+    source: target/release/payload
+  - name: request
+    source: target/release/request
+pipeline:
+  - ref: init
+    use: http
+    params:
+      address: 127.0.0.1:8080
+      routes:
+        - path: "/send/{number}"
+          attach: cases
+        - path: "/health"
+          attach: health
+        - path: "/req"
+          attach: request
+  - ref: cases
+    use: switch
+    params:
+      - condition: "eq params.number (string number)"
+        attach: number
+      - operator: eq
+        left: {{ params.number }}
+        right: "other"
+        attach: "other"
+    attach: default
+  - ref: number
+    use: payload
+    params:
+      status_code: 403
+      body:
+        value: {{ params.number }}
+        type: number
+      headers:
+        content-type: application/json
+    attach: init
+  - ref: other
+    use: payload
+    params:
+      status_code: 200
+      body:
+        value: ${ params.number }
+        type: other
+      headers:
+        content-type: application/json
+    attach: init
+  - ref: default
+    use: payload
+    params:
+      status_code: 201
+      body:
+        value: {{ params.number }}
+        type: default
+      headers:
+        content-type: application/json
+    attach: init
+  - ref: health
+    use: payload
+    params:
+      status_code: 200
+      body: "check"
+      headers:
+        content-type: plain/text
+    attach: init
+  - ref: request
+    use: request
+    params:
+      method: "get"
+    attach: init

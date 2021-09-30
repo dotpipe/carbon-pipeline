@@ -1,0 +1,54 @@
+import {
+    module sqs {
+        source="../plugins/payload/target/release/carbon_payload.dll"
+    }
+    module sqs {
+        git="github://carbonopen/aws-sqs"
+    }
+    module http {
+        cargo="carbon-axios"
+    }
+}
+pipeline {
+  step http {
+    payload={
+      response={
+            fullName: (fullName)
+        }
+    }
+
+    step
+        module=sqs
+        ref=sqs-dlq
+    {
+      params={
+        url=(env AWS_SQS_URL_DLQ)
+      }
+    }
+
+    step sqs {
+      payload={
+        request={
+            fullName: {{
+            concat (name.first) (name.last)
+            }}
+        }
+      }
+
+      params={
+        url=(env AWS_SQS_URL)
+      }
+
+      step case {
+        status = {
+          >= 500 => sqs-dlq
+          _ => http
+        }
+      }
+    }
+  }
+}
+
+
+
+
